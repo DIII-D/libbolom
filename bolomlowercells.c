@@ -29,10 +29,10 @@ static int debug  = 0;
 static jmp_buf sjbuf ;
 static int ilxp;
 static float xinc,yinc;
-float *gmatrix;
-int *gpos;
-int gmatrix_len;
-int gpos_len;
+extern float *gmatrix;
+extern int *gpos;
+extern int gmatrix_len;
+extern int gpos_len;
 #define PROJ (gpos[k])
 #define CELL (gpos[j])
 int grad[XLEN*YLEN];
@@ -89,7 +89,7 @@ float rax,zax,rxpt1,zxpt1,rxpt2,zxpt2;
     PREC *tz,*uz;
     PREC *sol;
 
-    struct sigvec vec,ovec;
+    struct sigaction vec,ovec;
     efitgeom(efit,rax,zax,rxpt1,zxpt1,rxpt2,zxpt2,psi_norm);
     if(!bolom_set_gmatrix(shot))return(0);
 
@@ -99,13 +99,15 @@ float rax,zax,rxpt1,zxpt1,rxpt2,zxpt2;
     if(done)return;
     done = 1;
 
-    vec.sv_handler = splcore;
-    vec.sv_mask = 0xffff;
-    vec.sv_onstack = 0;
-    vec.sv_flags = 0;
-    sigvector(SIGINT,&vec,&ovec);
-    prev_handler = ovec.sv_handler;
+#if defined(TRAPS)
+
+    vec.sa_handler = splcore;
+    sigfillset(&vec.sa_mask);
+    vec.sa_flags = 0;
+    sigaction(SIGINT,&vec,&ovec);
+    prev_handler = ovec.sa_handler;
     sleep(10);
+#endif
 
     /*write_projdat("coreorig.dat",inproj);*/
 
@@ -136,7 +138,9 @@ float rax,zax,rxpt1,zxpt1,rxpt2,zxpt2;
 
     printf("new routine ilxp = %d  iuix = %d  ouix = %d\n",ilxp,iuix,ouix);
 
-    sigvector(SIGINT,&ovec,0);
+#if defined(TRAPS)
+    sigaction(SIGINT,&ovec,0);
+#endif
 
 
 

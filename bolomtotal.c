@@ -37,122 +37,10 @@ static int done;
 static float xinc,yinc;
 float psi_norm[XLEN*YLEN],*inefit;
 
-
-
-bolomfit_global(shot,chans,nchans,inproj,sigma,c,nc,r,nr,z,nz,ur,nur,uz,nuz,ctens,xtens,ytens,uxtens,uytens,efit,rax,zax,rxpt1,zxpt1,rxpt2,zxpt2,fitproj,fitimage,ftol,fret,iter)
-int shot;
-float *inproj,*sigma,*c,*r,*z,*ur,*uz,*fitproj,ftol,*fret;
-float ctens,xtens,ytens,uxtens,uytens;
-image fitimage;
-image efit;
-int *chans,nchans,nc,nr,nz,nur,nuz;
-int *iter;
-float rax,zax,rxpt1,zxpt1,rxpt2,zxpt2;
-
-{
-
-    float sptotaleval();
-    float *p,**xi;
-    int dumpum_sptotal();
-    FILE *f;
-    int i,j,k;
-    int n;
-    int allbound;
-
-    struct sigvec vec,ovec;
-    funcevals = 1;
-
-    fitchans = chans;
-    nfitchans = nchans;
-    indata = inproj;
-    insigma = sigma;
-    corefitpts = c;
-    rfitpts = r;
-    zfitpts = z;
-    urfitpts = ur;
-    uzfitpts = uz;
-    ncorefitpts = nc;
-    inefit = efit;
-    nrfitpts = nr;
-    nzfitpts = nz;
-    nurfitpts = nur;
-    nuzfitpts = nuz;
-    numunk = nr * nz +nur * nuz + nc;
-    n = numunk + 1;
-    done = 0;
-    efitgeom(efit,rax,zax,rxpt1,zxpt1,rxpt2,zxpt2,psi_norm);
-    write_imagedat("psi_norm.sdt",psi_norm);
-    xinc = (XMAX - XMIN) / (float)(XLEN-1);
-    yinc = (YMAX - YMIN) / (float)(YLEN-1);
-    if(rxpt1 < XMIN || rxpt1 > XMAX ||
-        zxpt1 < YMIN || zxpt1 > YMAX){
-        ilxp = 0;
-    } else ilxp = (zxpt1 - YMIN) / yinc;
-    if(rxpt2 < XMIN || rxpt2 > XMAX ||
-        zxpt2 < YMIN || zxpt2 > YMAX){
-        iuxp = YLEN-1;
-    } else iuxp = (zxpt2 - YMIN) / yinc;
-    if(!bolom_set_gmatrix(shot))return(0);
-
-    setjmp(sjbuf);
-    if(done)return;
-    done = 1;
-
-    vec.sv_handler = dumpum_sptotal;
-    vec.sv_mask = 0xfffff;
-    vec.sv_onstack = 0;
-    vec.sv_flags = 0;
-    sigvector(SIGINT,&vec,&ovec);
-    prev_handler = ovec.sv_handler;
-
-    write_projdat("totalorig.dat",inproj);
-
-    p = vector(1,n);
-    undump = p;
-    for(i = 1; i <= n;++i)p[i] = 0.;
-    p[1] = 1e-4;
-    xi = matrix(1,n,1,n);
-
-    for(i = 1; i <= n ; ++i)
-        memset(&xi[i][1],0,n * sizeof(float));
-
-    for(i = 1; i <= n ; ++i){
-        xi[i][i] = 1e-4;
-    }
-
-    if((f = fopen("totalcoefs.dat","r")) != NULL){
-        for(i = 1;i <= n; ++i){
-            if(fscanf(f,"%g\n",&undump[i]) != 1)break;
-        }
-        fclose(f);
-    }
+void tot_spgridimage();
 
 
 
-    memset(fitimage,0,sizeof(float)*XLEN*YLEN);
-    spgridimage_init(ctens,xtens,ytens,uxtens,uytens);
-
-    if(ftol > 0.0)
-        powell(p,xi,n,ftol,iter,fret,sptotaleval);
-
-    fprintf(stderr,"iter = %d\n",*iter);
-    sigvector(SIGINT,&ovec,0);
-
-    f = fopen("totalcoefs.dat","w");
-    for(i = 1;i <= n; ++i){
-        fprintf(f,"%g\n",undump[i]);
-    }
-    fflush(f);
-    fclose(f);
-    spgridimage(fitimage,p);
-    spgridimage_done();
-    bolomproj(shot,fitimage,fitproj);
-    free_vector(p,1,n);
-    free_matrix(xi,1,n,1,n);
-
-
-
-}
 
 float sptotaleval(x)
 float x[];
@@ -186,6 +74,13 @@ float x[];
     return(val);
 
 }
+
+void tot_spgridimage_done()
+{
+    if(ncorefitpts > 0)spcoreimage_done();
+    if(nrfitpts > 0 && nzfitpts > 0)splowerimage_done();
+    if(nurfitpts > 0 && nuzfitpts > 0)spupperimage_done();
+}
 sptotalproj(proj,x,f)
 float proj[],x[];
 int f;
@@ -206,7 +101,7 @@ int f;
 
     memset(proj,0,CHANS * sizeof(float));
     memset(dimage,0,cells *  sizeof(float));
-    spgridimage(dimage,x);
+    tot_spgridimage(dimage,x);
     for(i = 0,j=0,k=1;i < len;++i,j+=2,k+=2){
         proj[PROJ] += gmatrix[i] * dimage[CELL];
     }
@@ -215,7 +110,6 @@ int f;
     if(f)write_imagedat("iter.sdt",dimage);
 
 }
-
 sanity_sptotal(x)
 float x[];
 {
@@ -255,7 +149,7 @@ dumpum_sptotal()
     FILE *f;
     int i;
     int n;
-    struct sigvec vec,ovec;
+    struct sigaction vec,ovec;
     image gimage;
     n = numunk;
     printf("dumping unknowns in totalcoefs.dat\n");
@@ -266,59 +160,22 @@ dumpum_sptotal()
     fflush(f);
     fclose(f);
     if(prev_handler){
-        vec.sv_handler = prev_handler;
-        vec.sv_mask = 0xffff;
-        vec.sv_onstack = 0;
-        vec.sv_flags = 0;
-        sigvector(SIGINT,&vec,0);
+        vec.sa_handler = prev_handler;
+	sigfillset(&vec.sa_mask);
+        vec.sa_flags = 0;
+        sigaction(SIGINT,&vec,0);
         prev_handler();
         longjmp(sjbuf,0) ;
     }  else
         exit(0);
 }
 
-static spgridimage_init(ctens,lxtens,lytens,uxtens,uytens)
-float ctens,lxtens,lytens,uxtens,uytens;
-{
-
-    if(ncorefitpts > 0)spcoreimage_init(ctens);
-    if(nrfitpts > 0 && nzfitpts > 0)splowerimage_init(lxtens,lytens);
-    if(nurfitpts > 0 && nuzfitpts > 0)spupperimage_init(uxtens,uytens);
-
-}
-static spgridimage(im,iter)
-float *im,*iter;
-{
-    image lowerimage,coreimage,upperimage;
-    int i;
-    memset(lowerimage,0,sizeof(float)*XLEN*YLEN);
-    memset(upperimage,0,sizeof(float)*XLEN*YLEN);
-    memset(coreimage,0,sizeof(float)*XLEN*YLEN);
-    if(ncorefitpts > 0){
-        spcoreimage(coreimage,iter);
-        for(i = 0; i < XLEN*YLEN; ++i)im[i] += coreimage[i];
-    }
-    if(nrfitpts > 0 && nzfitpts > 0){
-        splowerimage(lowerimage,&iter[ncorefitpts]);
-        for(i = 0; i < XLEN*YLEN; ++i)im[i] += lowerimage[i];
-    }
-    if(nurfitpts > 0 && nuzfitpts > 0){
-        spupperimage(upperimage,&iter[ncorefitpts + nrfitpts *nzfitpts]);
-        for(i = 0; i < XLEN*YLEN; ++i)im[i] += upperimage[i];
-    }
-}
-static spgridimage_done()
-{
-    if(ncorefitpts > 0)spcoreimage_done();
-    if(nrfitpts > 0 && nzfitpts > 0)splowerimage_done();
-    if(nurfitpts > 0 && nuzfitpts > 0)spupperimage_done();
-}
 static int nxpoint,nypoint;
 static float *x,*y,**z,*tz,*dy,**xp,*yp,*ltemp;
 static float sx,sy,slp1,slpn;
 static float xe,xb,ye,yb,xb2,xe2;
 
-static splowerimage_init(xtension,ytension)
+void splowerimage_init(xtension,ytension)
 float xtension,ytension;
 {
     int i;
@@ -348,7 +205,7 @@ float xtension,ytension;
 
 
 }
-static splowerimage(im,iter)
+void splowerimage(im,iter)
 float *im,*iter;
 {
     register int i,j,k;
@@ -399,7 +256,7 @@ float *im,*iter;
     for(i = 0; i < num; ++i)if(im[i] < 0.0 || bound_flag[i]) im[i] = 0.0;
 
 }
-static splowerimage_done()
+void splowerimage_done()
 {
     free_matrix(xp,0,nypoint,0,nxpoint);
     free_matrix(z,0,nypoint,0,nxpoint);
@@ -413,7 +270,7 @@ static splowerimage_done()
 
 static float *cx,*cxp,*ctemp;
 static float cs;
-static spcoreimage_init(tension)
+void spcoreimage_init(tension)
 float tension;
 {
     int i;
@@ -427,7 +284,7 @@ float tension;
     /*for(i =0 ; i < ncorefitpts; ++i)printf("core %d %g\n",i,cx[i]);*/
 
 }
-static spcoreimage(im,iter)
+void spcoreimage(im,iter)
 float *im,*iter;
 {
     register int i,j,k;
@@ -460,7 +317,7 @@ float *im,*iter;
     for(i = 0; i < num; ++i)if(im[i] < 0.0 || bound_flag[i]) im[i] = 0.0;
 
 }
-static spcoreimage_done()
+void spcoreimage_done()
 {
     free_vector(cxp,0,ncorefitpts);
     free_vector(cx,0,ncorefitpts);
@@ -472,7 +329,7 @@ static float *ux,*uy,**uz,*utz,*udy,**xpu,*uyp,*utemp;
 static float usx,usy,slp1,slpn;
 static float uxe,uxb,uye,uyb,uxb2,uxe2;
 
-static spupperimage_init(xtension,ytension)
+void spupperimage_init(xtension,ytension)
 float xtension,ytension;
 {
     int i;
@@ -500,7 +357,7 @@ float xtension,ytension;
 
 
 }
-static spupperimage(im,iter)
+void spupperimage(im,iter)
 float *im,*iter;
 {
     register int i,j,k;
@@ -551,7 +408,7 @@ float *im,*iter;
     for(i = 0; i < num; ++i)if(im[i] < 0.0 || bound_flag[i]) im[i] = 0.0;
 
 }
-static spupperimage_done()
+void spupperimage_done()
 {
     free_matrix(xpu,0,nuypoint,0,nuxpoint);
     free_matrix(uz,0,nuypoint,0,nuxpoint);
@@ -560,5 +417,154 @@ static spupperimage_done()
     free_vector(utemp,0,nuypoint*nuxpoint);
     free_vector(uy,0,nuypoint);
     free_vector(ux,0,nuxpoint);
+
+}
+
+void tot_spgridimage_init(ctens,lxtens,lytens,uxtens,uytens)
+float ctens,lxtens,lytens,uxtens,uytens;
+{
+
+    if(ncorefitpts > 0)spcoreimage_init(ctens);
+    if(nrfitpts > 0 && nzfitpts > 0)splowerimage_init(lxtens,lytens);
+    if(nurfitpts > 0 && nuzfitpts > 0)spupperimage_init(uxtens,uytens);
+
+}
+
+void tot_spgridimage(im,iter)
+float *im,*iter;
+{
+    image lowerimage,coreimage,upperimage;
+    int i;
+    memset(lowerimage,0,sizeof(float)*XLEN*YLEN);
+    memset(upperimage,0,sizeof(float)*XLEN*YLEN);
+    memset(coreimage,0,sizeof(float)*XLEN*YLEN);
+    if(ncorefitpts > 0){
+        spcoreimage(coreimage,iter);
+        for(i = 0; i < XLEN*YLEN; ++i)im[i] += coreimage[i];
+    }
+    if(nrfitpts > 0 && nzfitpts > 0){
+        splowerimage(lowerimage,&iter[ncorefitpts]);
+        for(i = 0; i < XLEN*YLEN; ++i)im[i] += lowerimage[i];
+    }
+    if(nurfitpts > 0 && nuzfitpts > 0){
+        spupperimage(upperimage,&iter[ncorefitpts + nrfitpts *nzfitpts]);
+        for(i = 0; i < XLEN*YLEN; ++i)im[i] += upperimage[i];
+    }
+}
+
+bolomfit_global(shot,chans,nchans,inproj,sigma,c,nc,r,nr,z,nz,ur,nur,uz,nuz,ctens,xtens,ytens,uxtens,uytens,efit,rax,zax,rxpt1,zxpt1,rxpt2,zxpt2,fitproj,fitimage,ftol,fret,iter)
+int shot;
+float *inproj,*sigma,*c,*r,*z,*ur,*uz,*fitproj,ftol,*fret;
+float ctens,xtens,ytens,uxtens,uytens;
+image fitimage;
+image efit;
+int *chans,nchans,nc,nr,nz,nur,nuz;
+int *iter;
+float rax,zax,rxpt1,zxpt1,rxpt2,zxpt2;
+
+{
+
+    float sptotaleval();
+    float *p,**xi;
+    int dumpum_sptotal();
+    FILE *f;
+    int i,j,k;
+    int n;
+    int allbound;
+
+    struct sigaction vec,ovec;
+    funcevals = 1;
+
+    fitchans = chans;
+    nfitchans = nchans;
+    indata = inproj;
+    insigma = sigma;
+    corefitpts = c;
+    rfitpts = r;
+    zfitpts = z;
+    urfitpts = ur;
+    uzfitpts = uz;
+    ncorefitpts = nc;
+    inefit = efit;
+    nrfitpts = nr;
+    nzfitpts = nz;
+    nurfitpts = nur;
+    nuzfitpts = nuz;
+    numunk = nr * nz +nur * nuz + nc;
+    n = numunk + 1;
+    done = 0;
+    efitgeom(efit,rax,zax,rxpt1,zxpt1,rxpt2,zxpt2,psi_norm);
+    write_imagedat("psi_norm.sdt",psi_norm);
+    xinc = (XMAX - XMIN) / (float)(XLEN-1);
+    yinc = (YMAX - YMIN) / (float)(YLEN-1);
+    if(rxpt1 < XMIN || rxpt1 > XMAX ||
+        zxpt1 < YMIN || zxpt1 > YMAX){
+        ilxp = 0;
+    } else ilxp = (zxpt1 - YMIN) / yinc;
+    if(rxpt2 < XMIN || rxpt2 > XMAX ||
+        zxpt2 < YMIN || zxpt2 > YMAX){
+        iuxp = YLEN-1;
+    } else iuxp = (zxpt2 - YMIN) / yinc;
+    if(!bolom_set_gmatrix(shot))return(0);
+
+    setjmp(sjbuf);
+    if(done)return;
+    done = 1;
+#if defined(TRAPS)
+    vec.sa_handler = dumpum_sptotal;
+    sigfillset(&vec.sa_mask);
+    vec.sa_flags = 0;
+    sigaction(SIGINT,&vec,&ovec);
+    prev_handler = ovec.sa_handler;
+#endif
+
+    write_projdat("totalorig.dat",inproj);
+
+    p = vector(1,n);
+    undump = p;
+    for(i = 1; i <= n;++i)p[i] = 0.;
+    p[1] = 1e-4;
+    xi = matrix(1,n,1,n);
+
+    for(i = 1; i <= n ; ++i)
+        memset(&xi[i][1],0,n * sizeof(float));
+
+    for(i = 1; i <= n ; ++i){
+        xi[i][i] = 1e-4;
+    }
+
+    if((f = fopen("totalcoefs.dat","r")) != NULL){
+        for(i = 1;i <= n; ++i){
+            if(fscanf(f,"%g\n",&undump[i]) != 1)break;
+        }
+        fclose(f);
+    }
+
+
+
+    memset(fitimage,0,sizeof(float)*XLEN*YLEN);
+    tot_spgridimage_init(ctens,xtens,ytens,uxtens,uytens);
+
+    if(ftol > 0.0)
+        powell(p,xi,n,ftol,iter,fret,sptotaleval);
+
+    fprintf(stderr,"iter = %d\n",*iter);
+#if defined(TRAPS)
+    sigaction(SIGINT,&ovec,0);
+#endif
+
+    f = fopen("totalcoefs.dat","w");
+    for(i = 1;i <= n; ++i){
+        fprintf(f,"%g\n",undump[i]);
+    }
+    fflush(f);
+    fclose(f);
+    tot_spgridimage(fitimage,p);
+    tot_spgridimage_done();
+    bolomproj(shot,fitimage,fitproj);
+    free_vector(p,1,n);
+    free_matrix(xi,1,n,1,n);
+
+
 
 }
