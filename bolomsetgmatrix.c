@@ -14,7 +14,12 @@ extern int gpos_len;
 bolom_set_gmatrix(shot)
 int shot;
 {
-    if(shot >= gmatrix_5_firstshot){
+    if(shot >= gmatrix_6_firstshot){
+        gmatrix = gmatrix_6;
+        gpos = gpos_6;
+        gmatrix_len = gmatrix_6_len;
+        gpos_len = gpos_6_len;
+    } else if(shot >= gmatrix_5_firstshot){
         gmatrix = gmatrix_5;
         gpos = gpos_5;
         gmatrix_len = gmatrix_5_len;
