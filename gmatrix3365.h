@@ -1,4 +1,9 @@
+/*
 
+Efit grid of 33x65 is assumed to be deprecated.
+
+
+*/
 /*
 Tue Jan 17 14:22:26 1995
 
