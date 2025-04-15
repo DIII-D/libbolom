@@ -1,10 +1,10 @@
 LIB=libblas.a
-SLIB=libblas.sl 
+SLIB=libblas.so 
 
 CFLAGS	      =
 
 #for shared library
-FFLAGS	      =+O2  +E1 +z +e +Ovectorize	
+FFLAGS	      =-fast -fPIC
 all: $(SLIB) $(LIB)
 
 #for archive library
