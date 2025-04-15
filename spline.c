@@ -211,7 +211,7 @@ char **argv;
     y=malloc(ENTRIES*sizeof(double));
     if(x==0 || y==0) {
         fprintf(stderr,"can\'t allocate buffer"); 
-        exit();
+        exit(1);
     }
     if(argc>1 && streq(argv[1],"?")) help();
     if(argc<=1 || *argv[1]=='-') file=stdin;
@@ -222,7 +222,7 @@ char **argv;
             file=fopen(argv[1],"r");
             if(file==0) {
                 printf("file %s not found\n",argv[1]); 
-                exit();
+                exit(1);
             }
             argc--; 
             argv++;
@@ -321,7 +321,7 @@ char **argv;
     temp=malloc(n*sizeof(double));
     if(temp==0 || yp==0) {
         fprintf(stderr,"can\'t allocate buffer"); 
-        exit();
+        exit(1);
     }
     if(curve)
     {
@@ -329,7 +329,7 @@ char **argv;
         path=malloc(n*sizeof(double));
         if(xp==0|| path==0) {
             fprintf(stderr,"can\'t allocate buffer"); 
-            exit();
+            exit(1);
         }
         path[0]=sum=0.;
         for (i=1; i<n; i++)
@@ -455,7 +455,7 @@ help()
     fprintf(stderr,"  -x  [min [max]]    interpolate from min to max \n");
     fprintf(stderr,"  -xl                take logs of x values before interpolating \n");
     fprintf(stderr,"  -yl                take logs of y values before interpolating \n");
-    exit();
+    exit(0);
 }
 
 numeric(s) char *s;
