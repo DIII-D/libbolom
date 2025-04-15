@@ -1,10 +1,14 @@
 pro linuxtest2
+common xptcom,nextwindow
+nextwindow = 0
 nchans = long(0);
 shot = long(186961)
+shot = long(202730)
 stime = 2000.0
 xlen = long(0);
 ylen = long(0);
-lib = './linux64/libbolom6565.linux64.so'
+DIRBOLO="/fusion/projects/diagnostics/bolometers/libbolom/"
+lib = DIRBOLO+'./linux64/libbolom6565.linux64.so'
 x = call_external(lib,'bolom_sizes',nchans,xlen,ylen)
 x = call_external(lib,'bolom_debug',250L)
 print,nchans,xlen,ylen
@@ -76,6 +80,10 @@ print,min(fitimage),max(fitimage)
 tvscl,congrid(fitimage,400,800)
 save
 
+range = [0.0,2.0]
+; the next two commands require "module load tangtv"
+;efitplot,shot,stime,fitimage,matrmin=84.0,matrmax=254.0,matzmin=-160.0,matzmax=160.0,range=range
+;efitplot,shot,stime,efit,matrmin=84.0,matrmax=254.0,matzmin=-160.0,matzmax=160.0,range=range
   return
   end
 
