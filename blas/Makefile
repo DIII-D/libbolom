@@ -5,14 +5,10 @@ CFLAGS	      =
 
 #for shared library
 FC =gfortran
-FFLAGS	      =+O2  +E1 +z +e +Ovectorize	
 FFLAGS	      =  -fPIC -fallow-argument-mismatch
 #all: $(SLIB) $(LIB)
 all:  $(LIB)
 
-#for archive library
-#FFLAGS	      =+Oall  +E1 +z +e  +Ovectorize
-#all: $(LIB) 
 
 
 OBJS	      = \
