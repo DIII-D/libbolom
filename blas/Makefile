@@ -4,18 +4,23 @@ SLIB=libblas.so
 CFLAGS	      =
 
 #for shared library
-FFLAGS	      =-fast -fPIC
-all: $(SLIB) $(LIB)
+FC =gfortran
+FFLAGS	      =  -fPIC -fallow-argument-mismatch
+#all: $(SLIB) $(LIB)
+all:  $(LIB)
 
-#for archive library
-#FFLAGS	      =+Oall  +E1 +z +e  +Ovectorize
-#all: $(LIB) 
 
 
 OBJS	      = \
     dblas1.o \
 		dblas2.o\
 		dblas3.o\
+		sblas1.o\
+		sblas2.o\
+		sblas3.o\
+		util.o
+
+OBJS	      = \
 		sblas1.o\
 		sblas2.o\
 		sblas3.o\
@@ -36,4 +41,5 @@ $(LIB): $(OBJS)
 	
 $(SLIB): $(OBJS)
 		ld -v -t -b -o $(SLIB) -L/usr/lib -lf $? 
-
+clean:
+	rm *.o *.a
