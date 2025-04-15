@@ -9,7 +9,7 @@ void *argv[];
     int *idebug;
     if(argc != 1){
         fprintf(stderr,"\n");
-        fprintf(stderr,"IDL Usage   : stat = call_external(\"libbolom.sl\",\"bolom_debug\",num) \n");
+        fprintf(stderr,"IDL Usage   : stat = call_external(\"libbolom.so\",\"bolom_debug\",num) \n");
         fprintf(stderr,"       where:  num - if iterations modulo num equals zero some debug\n");
         fprintf(stderr,"                     info is printed, 0 to turn debug info off\n");
         fprintf(stderr,"\n");
@@ -29,7 +29,7 @@ void *argv[];
     int *x,*y,*ichans;
     if(argc != 3){
         fprintf(stderr,"\n");
-        fprintf(stderr,"IDL Usage   : stat = call_external(\"libbolom.sl\",\"bolom_sizes\",chans,\n");
+        fprintf(stderr,"IDL Usage   : stat = call_external(\"libbolom.so\",\"bolom_sizes\",chans,\n");
         fprintf(stderr,"                                   image_x,image_y) \n");
         fprintf(stderr,"       where:  chans - number of input soft x-ray channels\n");
         fprintf(stderr,"               image_x - x dimension of solution image/cos terms\n");
@@ -50,6 +50,7 @@ void *argv[];
     return(0);
 
 }
+#if defined(CORE)
 bolom_core_fit(argc,argv)
 int argc;
 void *argv[];
@@ -61,7 +62,7 @@ void *argv[];
 
     if(argc != 19){
         fprintf(stderr,"\n");
-        fprintf(stderr,"IDL Usage   : stat = call_external(\"libbolom.sl\",\"bolom_core_fit\",shot,chans,\n");
+        fprintf(stderr,"IDL Usage   : stat = call_external(\"libbolom.so\",\"bolom_core_fit\",shot,chans,\n");
         fprintf(stderr,"                                   nchans,inproj,sigma,kpsi,nkpsi,tension,\n");
         fprintf(stderr,"                                   efit,rax,zax,rxpt1,zxpt1,rxpt2,zxpt2,\n");
         fprintf(stderr,"                                   fitproj,fitimage,errorimage,chi\n");
@@ -111,8 +112,9 @@ void *argv[];
         *rax,*zax,*rxpt1,*zxpt1,*rxpt2,*zxpt2,fitproj,fitimage,errorimage,fret);
 
     return(0);
-
 }
+#endif
+#if defined(LOWER)
 bolom_lower_fit_cells(argc,argv)
 int argc;
 void *argv[];
@@ -126,7 +128,7 @@ void *argv[];
 
     if(argc != 25){
         fprintf(stderr,"\n");
-        fprintf(stderr,"IDL Usage   : stat = call_external(\"libbolom.sl\",\"bolom_lower_fit_cells\",shot,chans,\n");
+        fprintf(stderr,"IDL Usage   : stat = call_external(\"libbolom.so\",\"bolom_lower_fit_cells\",shot,chans,\n");
         fprintf(stderr,"                                   nchans,inproj,sigma,zinner,zouter,minprivate,\n");
         fprintf(stderr,"                                   mincore,maxinner,maxouter,drwtd,dzwtd,drwtb,dzwtb,\n");
         fprintf(stderr,"                                   efit,rax,zax,rxpt1,zxpt1,rxpt2,zxpt2,\n");
@@ -203,7 +205,7 @@ void *argv[];
 
     if(argc != 25){
         fprintf(stderr,"\n");
-        fprintf(stderr,"IDL Usage   : stat = call_external(\"libbolom.sl\",\"bolom_lower_fit_cells_5pt\",shot,chans,\n");
+        fprintf(stderr,"IDL Usage   : stat = call_external(\"libbolom.so\",\"bolom_lower_fit_cells_5pt\",shot,chans,\n");
         fprintf(stderr,"                                   nchans,inproj,sigma,zinner,zouter,minprivate,\n");
         fprintf(stderr,"                                   mincore,maxinner,maxouter,drweight,dzweight,\n");
         fprintf(stderr,"                                   efit,rax,zax,rxpt1,zxpt1,rxpt2,zxpt2,\n");
@@ -267,6 +269,8 @@ void *argv[];
     return(0);
 
 }
+#endif
+#if defined(UPPER)
 bolom_upper_fit_cells(argc,argv)
 int argc;
 void *argv[];
@@ -280,7 +284,7 @@ void *argv[];
 
     if(argc != 25){
         fprintf(stderr,"\n");
-        fprintf(stderr,"IDL Usage   : stat = call_external(\"libbolom.sl\",\"bolom_upper_fit_cells\",shot,chans,\n");
+        fprintf(stderr,"IDL Usage   : stat = call_external(\"libbolom.so\",\"bolom_upper_fit_cells\",shot,chans,\n");
         fprintf(stderr,"                                   nchans,inproj,sigma,zinner,zouter,minprivate,\n");
         fprintf(stderr,"                                   mincore,maxinner,maxouter,drweight,dzweight,\n");
         fprintf(stderr,"                                   efit,rax,zax,rxpt1,zxpt1,rxpt2,zxpt2,\n");
@@ -344,6 +348,8 @@ void *argv[];
     return(0);
 
 }
+#endif
+#if defined(LOWER)
 bolom_lower_fit(argc,argv)
 int argc;
 void *argv[];
@@ -357,7 +363,7 @@ void *argv[];
 
     if(argc != 23){
         fprintf(stderr,"\n");
-        fprintf(stderr,"IDL Usage   : stat = call_external(\"libbolom.sl\",\"bolom_lower_fit\",shot,chans,\n");
+        fprintf(stderr,"IDL Usage   : stat = call_external(\"libbolom.so\",\"bolom_lower_fit\",shot,chans,\n");
         fprintf(stderr,"                                   nchans,inproj,sigma,r,nr,z,nz,rtension,\n");
         fprintf(stderr,"                                   ztension,efit,rax,zax,rxpt1,zxpt1,rxpt2,zxpt2\n");
         fprintf(stderr,"                                   fitproj,fitimage,ftol,chi,iters\n");
@@ -418,6 +424,8 @@ void *argv[];
     return(0);
 
 }
+#endif
+#if defined(CORE) && defined(LOWER) && defined(UPPER)
 bolom_global_fit(argc,argv)
 int argc;
 void *argv[];
@@ -431,7 +439,7 @@ void *argv[];
 
     if(argc != 32){
         fprintf(stderr,"\n");
-        fprintf(stderr,"IDL Usage   : stat = call_external(\"libbolom.sl\",\"bolom_lower_fit\",shot,chans,\n");
+        fprintf(stderr,"IDL Usage   : stat = call_external(\"libbolom.so\",\"bolom_lower_fit\",shot,chans,\n");
         fprintf(stderr,"                                   nchans,inproj,sigma,r,nr,z,nz,rtension,\n");
         fprintf(stderr,"                                   ztension,efit,rax,zax,rxpt1,zxpt1,rxpt2,zxpt2,\n");
         fprintf(stderr,"                                   fitproj,fitimage,ftol,chi,iters\n");
@@ -511,6 +519,8 @@ void *argv[];
     return(0);
 
 }
+#endif
+#if defined(UPPER)
 bolom_upper_fit(argc,argv)
 int argc;
 void *argv[];
@@ -523,7 +533,7 @@ void *argv[];
 
     if(argc != 23){
         fprintf(stderr,"\n");
-        fprintf(stderr,"IDL Usage   : stat = call_external(\"libbolom.sl\",\"bolom_upper_fit\",shot,chans,\n");
+        fprintf(stderr,"IDL Usage   : stat = call_external(\"libbolom.so\",\"bolom_upper_fit\",shot,chans,\n");
         fprintf(stderr,"                                   nchans,inproj,sigma,r,nr,z,nz,rtension,\n");
         fprintf(stderr,"                                   ztension,efit,rax,zax,rxpt1,zxpt1,rxpt2,zxpt2,\n");
         fprintf(stderr,"                                   fitproj,fitimage,ftol,chi,iters\n");
@@ -584,6 +594,7 @@ void *argv[];
     return(0);
 
 }
+#endif
 bolom_proj(argc,argv)
 int argc;
 void *argv[];
@@ -594,7 +605,7 @@ void *argv[];
 
     if(argc != 3){
         fprintf(stderr,"\n");
-        fprintf(stderr,"IDL Usage   : stat = call_external(\"libbolom.sl\",\"bolom_proj\",shot,image,proj)\n");
+        fprintf(stderr,"IDL Usage   : stat = call_external(\"libbolom.so\",\"bolom_proj\",shot,image,proj)\n");
         fprintf(stderr,"       where:  shot - shot number determines which geometry matrix is used (long integer)\n");
         fprintf(stderr,"               image - 2d array of W/cm^3 bolometer power on efit\n");
         fprintf(stderr,"                          grid (real)\n");
@@ -620,7 +631,7 @@ void *argv[];
 
     if(argc != 3){
         fprintf(stderr,"\n");
-        fprintf(stderr,"IDL Usage   : stat = call_external(\"libbolom.sl\",\"bolom_bproj\",shot,image,proj)\n");
+        fprintf(stderr,"IDL Usage   : stat = call_external(\"libbolom.so\",\"bolom_bproj\",shot,image,proj)\n");
         fprintf(stderr,"       where:  shot - shot number determines which geometry matrix is used (long integer)\n");
         fprintf(stderr,"               image - 2d array of W/cm^3 bolometer power on efit\n");
         fprintf(stderr,"                          grid (real)\n");
@@ -636,3 +647,4 @@ void *argv[];
     return(0);
 
 }
+
