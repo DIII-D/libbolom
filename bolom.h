@@ -15,3 +15,6 @@ typedef float image[YLEN * XLEN];
 #ifdef linux
 #define sigvector sigvec
 #endif
+#define CORE
+#define LOWER
+#define UPPER
