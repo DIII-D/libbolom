@@ -1,10 +1,15 @@
 pro linuxtest
+common xptcom,nextwindow
+nextwindow = 0
 nchans = long(0);
 shot = long(186961)
+shot = long(202730)
 stime = 2000.0
 xlen = long(0);
 ylen = long(0);
-lib = './linux64/libbolom6565.linux64.so'
+DIRBOLO="/fusion/projects/diagnostics/bolometers/libbolom/"
+DIRBOLO="./"
+lib = DIRBOLO+'./linux64/libbolom6565.linux64.so'
 x = call_external(lib,'bolom_sizes',nchans,xlen,ylen)
 x = call_external(lib,'bolom_debug',250L)
 
@@ -41,9 +46,12 @@ fluximage=(g.psirz(0:g.mw-1,0:g.mh-1)-g.ssimag)/(g.ssibry-g.ssimag)
 
   testimage = abs(max(rhoimage) - rhoimage)
 x = call_external(lib,'bolom_proj',shot,testimage,proj)
+window,0, xsize=400,ysize=800
 plot,proj
+tvscl,congrid(testimage,400,800)
 origproj = proj
 efit = fltarr(65,65)
+window,1, xsize=400,ysize=800
 x = call_external(lib,'bolom_bproj',shot,efit,proj)
 tvscl,congrid(efit,400,800)
 origimage = testimage
@@ -75,6 +83,7 @@ status =call_external(lib,'bolom_core_fit',   $
                 fit, fitimage, errorimage, chi)
 
 corefitimage = fitimage
+window,2, xsize=400,ysize=800
 tvscl,congrid(fitimage,400,800)
 corefit = fit
 totalfit = fitimage
@@ -107,6 +116,7 @@ status = call_external(lib,'bolom_lower_fit_cells',$
 
 lowerfit = fit
 lowerfitimage = divlimage
+window,3, xsize=400,ysize=800
 tvscl,congrid(divlimage,400,800)
 totalfit = totalfit + divlimage
 
@@ -138,10 +148,15 @@ x = call_external(lib,'bolom_upper_fit_cells',$
 
 upperfit = fit
 upperfitimage = divuimage
+window,4, xsize=400,ysize=800
 tvscl,congrid(divuimage,400,800)
 totalfit = totalfit + divuimage
+window,5, xsize=400,ysize=800
 tvscl,congrid(totalfit,400,800)
-
+range=[0,2.0]
+; the next two commands require "module load tangtv"
+;efitplot,shot,stime,totalfit,matrmin=84.0,matrmax=254.0,matzmin=-160.0,matzmax=160.0,range=range
+;efitplot,shot,stime,testimage,matrmin=84.0,matrmax=254.0,matzmin=-160.0,matzmax=160.0,range=range
 
 
 save
