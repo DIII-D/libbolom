@@ -81,7 +81,7 @@ float rax,zax,rxpt1,zxpt1,rxpt2,zxpt2;
     n = numunk + 1;
     done = 0;
     efitgeom(efit,rax,zax,rxpt1,zxpt1,rxpt2,zxpt2,psi_norm);
-    write_imagedat("psi_norm.sdt",psi_norm);
+    //write_imagedat("psi_norm.sdt",psi_norm);
     xinc = (XMAX - XMIN) / (float)(XLEN-1);
     yinc = (YMAX - YMIN) / (float)(YLEN-1);
     if(rxpt1 < XMIN || rxpt1 > XMAX ||
@@ -105,7 +105,7 @@ float rax,zax,rxpt1,zxpt1,rxpt2,zxpt2;
     sigvector(SIGINT,&vec,&ovec);
     prev_handler = ovec.sv_handler;
 
-    write_projdat("totalorig.dat",inproj);
+    //write_projdat("totalorig.dat",inproj);
 
     p = vector(1,n);
     undump = p;
