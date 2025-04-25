@@ -32,7 +32,7 @@ if err ne 0 then begin
     print,'Problem reading efit for ',shot,'@',time,'status = ',err
     print,'Reconnecting and trying again'
     mdsdisconnect
-    mdsconnect,atlas()
+    mdsconnect,"atlas.gat.com"
     tvgetefit,shot,time,aaa,ggg,deltime=20,err=err,mode='mdsplus',runid=runid,quiet=quiet
     if err ne 0 then return
 endif
