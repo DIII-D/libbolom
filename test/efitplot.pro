@@ -49,7 +49,7 @@ endif else begin
     _imxlen = _imxlen * _scale
     _imylen = _imylen * _scale
     nextwindow = nextwindow+1
-    winifopen,nextwindow,wins=wins,xpos=xpos,ypos=ypos,xsize=_imxlen,ysize=_imylen
+    window,nextwindow,xpos=xpos,ypos=ypos,xsize=_imxlen,ysize=_imylen
 endelse
 lim = ggg.lim
 if isa(limiter) gt 0 then lim=limiter
