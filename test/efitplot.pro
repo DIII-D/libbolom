@@ -27,13 +27,13 @@ img_r = img_r / 100.0
 img_z = img_z / 100.0
 delr = (img_r[1]-img_r[0]) * 0.5
 delz = (img_z[1]-img_z[0]) * 0.5
-tvgetefit,shot,time,aaa,ggg,deltime=20,err=err,mode='mdsplus',runid=runid,quiet=quiet
+getefit,shot,time,aaa,ggg,deltime=20,err=err,mode='mdsplus',runid=runid
 if err ne 0 then begin
     print,'Problem reading efit for ',shot,'@',time,'status = ',err
     print,'Reconnecting and trying again'
     mdsdisconnect
     mdsconnect,"atlas.gat.com"
-    tvgetefit,shot,time,aaa,ggg,deltime=20,err=err,mode='mdsplus',runid=runid,quiet=quiet
+    getefit,shot,time,aaa,ggg,deltime=20,err=err,mode='mdsplus',runid=runid
     if err ne 0 then return
 endif
 _imxlen = float(imxlen)
