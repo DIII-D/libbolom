@@ -6,6 +6,7 @@ CFLAGS	      =
 #for shared library
 FC =gfortran
 FFLAGS	      =  -fPIC -fallow-argument-mismatch
+FFLAGS	      =  -fPIC
 #all: $(SLIB) $(LIB)
 all:  $(LIB)
 
