@@ -205,7 +205,6 @@ libbolom.so:  blas/libblas.a $(OBJS)
 	   echo uname 1 = ${OSPATH} ;							\
 	   echo ' ' ;                                                                   \
 		   echo 'Linux 32-bit version';						\
-		   cd blas && make;                                                     \
 		   $(LD) -o libbolom.so -shared $(OBJS)  $(LDFLAGS) $(LIBS);    	\
 		   mkdir -p linux;                                                      \
 		   cp libbolom.so libbolom6565.linux.so;				\
@@ -216,7 +215,6 @@ libbolom.so:  blas/libblas.a $(OBJS)
 	   echo OSPATH 2 = ${OSPATH};							\
 	   echo NOTE: linux64/libidl64 constructed;					\
 		   echo 'Linux64 version';						\
-		   cd blas && make;                                                     \
 		   $(LD) -o libbolom.so -shared $(OBJS)  $(LDFLAGS) $(LIBS64);		\
 		   mkdir -p linux64;                                                    \
 		   cp libbolom.so libbolom6565.linux64.so;				\
