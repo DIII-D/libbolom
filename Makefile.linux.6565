@@ -188,7 +188,7 @@ bolomfitsl:     bolomfit.o
 		chmod u+x bolomfit
 		@echo "done"
 
-libbolom.so:  $(OBJS)
+libbolom.so:  blas/libblas.a $(OBJS)
 		@echo ' '
 		@echo ' -----------------------------------------------------'
 		@echo 'Building libbolom.linux.so  20090122 tbt'
@@ -232,6 +232,8 @@ libbolom.so:  $(OBJS)
 libbolomx.so: $(OBJS) bolomx.o
 		ld -b $(OBJS) bolomx.o -o libbolomx.so  $(LDFLAGS) $(LIBS)
 
+blas/libblas.a:
+		cd blas && make
 libbolom.a: $(OBJS) 
 		ar r libbolom.a $?
 
