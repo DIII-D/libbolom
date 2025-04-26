@@ -188,7 +188,7 @@ bolomfitsl:     bolomfit.o
 		chmod u+x bolomfit
 		@echo "done"
 
-libbolom.so:  $(OBJS)
+libbolom.so:  blas/libblas.a $(OBJS)
 		@echo ' '
 		@echo ' -----------------------------------------------------'
 		@echo 'Building libbolom.linux.so  20090122 tbt'
@@ -206,6 +206,7 @@ libbolom.so:  $(OBJS)
 	   echo ' ' ;                                                                   \
 		   echo 'Linux 32-bit version';						\
 		   $(LD) -o libbolom.so -shared $(OBJS)  $(LDFLAGS) $(LIBS);    	\
+		   mkdir -p linux;                                                      \
 		   cp libbolom.so libbolom6565.linux.so;				\
 		   cp libbolom.so libbolom6565.so;					\
 		   cp libbolom.so linux/libbolom6565.linux.so;				\
@@ -215,6 +216,7 @@ libbolom.so:  $(OBJS)
 	   echo NOTE: linux64/libidl64 constructed;					\
 		   echo 'Linux64 version';						\
 		   $(LD) -o libbolom.so -shared $(OBJS)  $(LDFLAGS) $(LIBS64);		\
+		   mkdir -p linux64;                                                    \
 		   cp libbolom.so libbolom6565.linux64.so;				\
 		   cp libbolom.so linux64/libbolom6565.linux64.so;			\
 	 else										\
@@ -228,6 +230,8 @@ libbolom.so:  $(OBJS)
 libbolomx.so: $(OBJS) bolomx.o
 		ld -b $(OBJS) bolomx.o -o libbolomx.so  $(LDFLAGS) $(LIBS)
 
+blas/libblas.a:
+		cd blas && make
 libbolom.a: $(OBJS) 
 		ar r libbolom.a $?
 
