@@ -216,7 +216,7 @@ blas/libblas.a:
 		cd blas && make
 libbolom.so:  $(OBJS) blas/libblas.a
 	$(LD) -o libbolom.so -shared $(OBJS)  $(LDFLAGS) $(LIBS64);		\
-	   mkdir -p linux;                                                      \
+	   mkdir -p linux64;                                                      \
 	   cp libbolom.so libbolom6565.linux64.so;				\
 	   cp libbolom.so linux64/libbolom6565.linux64.so;			\
 
