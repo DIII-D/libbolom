@@ -124,7 +124,7 @@ LIBS64	      =  -L./blas -lblas
 #
 # 20110414 acml.so doesn't exist on venus
 #LIBS64	      =  $(PGI_DIR)/lib/libblas.a $(PGI_DIR)/libso/libpgc.so
-#LIBS64	      =  -L $(LD_LIBRARY_PATH) libblas.a 
+LIBS64	      =  -L $(LD_LIBRARY_PATH) -L./blas -lblas
 
 
 MAKEFILE      = Makefile
@@ -212,6 +212,8 @@ bolomfitsl:     bolomfit.o
 		chmod u+x bolomfit
 		@echo "done"
 
+blas/libblas.a:
+		cd blas && make
 libbolom.so:  $(OBJS) blas/libblas.a
 	$(LD) -o libbolom.so -shared $(OBJS)  $(LDFLAGS) $(LIBS64);		\
 	   cp libbolom.so libbolom6565.linux64.so;				\
