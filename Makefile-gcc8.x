@@ -161,7 +161,7 @@ COREOBJS = idlwrappers.o \
        corespline.o \
        splinebasis.o\
        bolomproj.o \
-       lsei.o \
+       587.o \
        tomscore.o
 
 OBJS = $(COREOBJS) $(LOWEROBJS) $(UPPEROBJS)
