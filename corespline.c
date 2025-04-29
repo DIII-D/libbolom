@@ -114,9 +114,7 @@ float rax,zax,rxpt1,zxpt1,rxpt2,zxpt2;
 
     /*write_projdat("coreorig.dat",inproj);*/
 
-    T=tens;
-
-    //for(i=0;i<71;++i)tproj[i] = 0.0;
+    for(i=0;i<71;++i)tproj[i] = 0.0;
     for(i=0;i<nchans;++i){
         tproj[chans[i]] = inproj[chans[i]];
     }
