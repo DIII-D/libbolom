@@ -145,10 +145,10 @@ float rax,zax,rxpt1,zxpt1,rxpt2,zxpt2;
 
 
 
-    printf("number of knots= %d\n",nkpsi);
+    //printf("number of knots= %d\n",nkpsi);
 
     na = XLEN * YLEN;
-    printf("na:%d nchans:%d\n",na,nchans);
+    //printf("na:%d nchans:%d\n",na,nchans);
     numunk = 2 * nkpsi;
     cmat = calloc(sizeof(PREC),numunk * na);
 
@@ -188,8 +188,8 @@ float rax,zax,rxpt1,zxpt1,rxpt2,zxpt2;
     BACNST(&numunk,&T,kpsi,&nkpsi,u,&eqn,&nma,uz);
 
 
-    printf("least squares matrix is %d x %d\n",numunk,nchans);
-    printf("constraint matrix is %d x %d\n",numunk,nma);
+    //printf("least squares matrix is %d x %d\n",numunk,nchans);
+    //printf("constraint matrix is %d x %d\n",numunk,nma);
 
     sol = calloc(sizeof(PREC) * 2,numunk);
     tz = calloc(sizeof(PREC) * 2,nchans);
@@ -214,7 +214,7 @@ float rax,zax,rxpt1,zxpt1,rxpt2,zxpt2;
         /*printf("info = %d\n",info);*/
         return;
     }
-    printf("lwork = %d work(1) = %g\n",lwork,work[0]);
+    //printf("lwork = %d work(1) = %g\n",lwork,work[0]);
 #else
 
     mg = numunk / 2;
@@ -329,8 +329,8 @@ float rax,zax,rxpt1,zxpt1,rxpt2,zxpt2;
     }
     if(nchans > numunk)
         *fret = *fret / (float)(nchans - numunk);
-    fprintf(stderr,"core chi = %g\n",*fret);
-    printf("core chi = %g\n",*fret);
+    //fprintf(stderr,"core chi = %g\n",*fret);
+    //printf("core chi = %g\n",*fret);
     free(cmat);
     free(imat);
     free(timat);
