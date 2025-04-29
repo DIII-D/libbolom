@@ -1,4 +1,4 @@
-pro linuxtest,savefile,production=production
+pro linuxtest,savefile,mse,production=production,referencefile=referencefile,saveref=saveref
 restore,savefile
 common xptcom,nextwindow
 nextwindow = 0
@@ -132,6 +132,8 @@ endif
 
 
 
+
+
 upperfit = fit
 upperfitimage = divuimage
 totalfit = totalfit + divuimage
@@ -142,11 +144,31 @@ if testplots eq 1 then begin
    window,nextwindow, xsize=400,ysize=800,title="Total Fit"
    nextwindow = nextwindow+1
    tvscl,congrid(totalfit,400,800)
+   ; the next two commands require "module load tangtv"
+   range = [min(testimage),max(testimage)]
+   efitplot,shot,stime,totalfit,matrmin=84.0,matrmax=254.0,matzmin=-160.0,matzmax=160.0,tl='Fit',range=range
+   efitplot,shot,stime,testimage,matrmin=84.0,matrmax=254.0,matzmin=-160.0,matzmax=160.0,tl='Phantom',range=range
 endif
-; the next two commands require "module load tangtv"
-range = [min(testimage),max(testimage)]
-efitplot,shot,stime,totalfit,matrmin=84.0,matrmax=254.0,matzmin=-160.0,matzmax=160.0,tl='Fit',range=range
-efitplot,shot,stime,testimage,matrmin=84.0,matrmax=254.0,matzmin=-160.0,matzmax=160.0,tl='Phantom',range=range
+
+
+mse = 0
+reference = totalfit
+if isa(saveref) ne 0 then begin
+   if isa(referencefile) ne 0 then begin
+        save,file=referencefile,reference
+   endif else begin
+        save,file='reference.dat',reference
+   endelse
+endif else begin
+   if isa(referencefile) ne 0 then begin
+      restore,referencefile
+      ; Calculate the squared differences
+      squared_diff = (totalfit - reference)^2
+      
+      ; Compute the mean of these squared differences
+      mse = total(squared_diff) / n_elements(totalfit)
+   endif 
+endelse
 
   return
 
