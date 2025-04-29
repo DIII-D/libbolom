@@ -175,7 +175,7 @@ SRCSF = splinebasis.f
 #		/usr/include/sys/syscall.h \
 #		/usr/include/sys/types.h
 
-all:		libbolom.so 
+all:		libbolom.so test
 
 $(PROGRAM):     $(OBJS)  bolomfit.o $(OBJS)
 		@echo "Linking $(PROGRAM) ..."
@@ -200,7 +200,7 @@ libbolom.so:  blas/libblas.a $(OBJS)
 ############
 # 20060608 tbt Added Share
 # 20090123 tbt Differentiate linux from linux64.
-	 if [ ${OSPATH} = linux ] ; 							\
+	 @if [ ${OSPATH} = linux ] ; 							\
 	 then 										\
 	   echo uname 1 = ${OSPATH} ;							\
 	   echo ' ' ;                                                                   \
@@ -232,6 +232,8 @@ libbolomx.so: $(OBJS) bolomx.o
 
 blas/libblas.a:
 		cd blas && make
+test:
+		cd test && make
 libbolom.a: $(OBJS) 
 		ar r libbolom.a $?
 
