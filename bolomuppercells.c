@@ -112,7 +112,7 @@ float rax,zax,rxpt1,zxpt1,rxpt2,zxpt2;
     yinc = (YMAX - YMIN) / (float)(YLEN-1);
     drwtd *= yinc / xinc;
     drwtb *= yinc / xinc;
-    printf("rw=%g zw=%g\n",drwtd,dzwtd);
+    //printf("rw=%g zw=%g\n",drwtd,dzwtd);
 
     if(rxpt2 < XMIN || rxpt2 > XMAX ||
         zxpt2 < YMIN || zxpt2 > YMAX){
@@ -134,7 +134,7 @@ float rax,zax,rxpt1,zxpt1,rxpt2,zxpt2;
     here = 0;
 
 
-    printf("ilxp = %d  iuix = %d  ouix = %d\n",ilxp,iuix,ouix);
+    //printf("ilxp = %d  iuix = %d  ouix = %d\n",ilxp,iuix,ouix);
 
     sigvector(SIGINT,&ovec,0);
 
@@ -176,7 +176,7 @@ float rax,zax,rxpt1,zxpt1,rxpt2,zxpt2;
 
     lda = numlow;
     toteqn = 2*lda + nchans;
-    printf("numlow = %d lda = %d toteqn = %d\n",numlow,lda,toteqn);
+    //printf("numlow = %d lda = %d toteqn = %d\n",numlow,lda,toteqn);
     cmat = calloc(sizeof(PREC),na);
 
     imat = calloc(sizeof(PREC) * 2,lda * toteqn);
@@ -349,7 +349,7 @@ float rax,zax,rxpt1,zxpt1,rxpt2,zxpt2;
     prgopt[7] = 1;
     prgopt[8] = 1;
     LSEI(w,&mdw,&me,&ma,&mg,&lda,prgopt,sol,&rnorme,&rnorml,&mode,ws,ip);
-    printf("lsei mode = %d\n",mode);
+    //printf("lsei mode = %d\n",mode);
     memset(fitimage,0,XLEN*YLEN*sizeof(float));
     for(j = 0,k = 0;k < na;++k){
         if(grad[k]){
