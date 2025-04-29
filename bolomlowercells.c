@@ -134,7 +134,7 @@ float rax,zax,rxpt1,zxpt1,rxpt2,zxpt2;
     here = 0;
 
 
-    printf("new routine ilxp = %d  iuix = %d  ouix = %d\n",ilxp,iuix,ouix);
+    //printf("new routine ilxp = %d  iuix = %d  ouix = %d\n",ilxp,iuix,ouix);
 
     sigvector(SIGINT,&ovec,0);
 
@@ -177,11 +177,11 @@ float rax,zax,rxpt1,zxpt1,rxpt2,zxpt2;
         }
       }
 
-    printf("ilxp = %d iuix = %d ouix = %d ibndy = %d\n",ilxp,iuix,ouix,ibndy);
+    //printf("ilxp = %d iuix = %d ouix = %d ibndy = %d\n",ilxp,iuix,ouix,ibndy);
 
     lda = numlow;
     toteqn = 2*lda + nchans;
-    printf("numlow = %d lda = %d toteqn = %d\n",numlow,lda,toteqn);
+    //printf("numlow = %d lda = %d toteqn = %d\n",numlow,lda,toteqn);
     cmat = calloc(sizeof(PREC),na);
 
     imat = calloc(sizeof(PREC) * 2,lda * toteqn);
@@ -354,7 +354,7 @@ float rax,zax,rxpt1,zxpt1,rxpt2,zxpt2;
     prgopt[7] = 1;
     prgopt[8] = 1;
     LSEI(w,&mdw,&me,&ma,&mg,&lda,prgopt,sol,&rnorme,&rnorml,&mode,ws,ip);
-    printf("lsei mode = %d\n",mode);
+    //printf("lsei mode = %d\n",mode);
     memset(fitimage,0,XLEN*YLEN*sizeof(float));
     for(j = 0,k = 0;k < na;++k){
         if(grad[k]){
