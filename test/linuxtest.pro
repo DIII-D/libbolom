@@ -151,6 +151,7 @@ if testplots eq 1 then begin
 endif
 
 
+mse = 0
 reference = totalfit
 if isa(saveref) ne 0 then begin
    if isa(referencefile) ne 0 then begin
@@ -161,19 +162,14 @@ if isa(saveref) ne 0 then begin
 endif else begin
    if isa(referencefile) ne 0 then begin
       restore,referencefile
-   endif else
-      restore,'reference.dat'
-   endelse
       ; Calculate the squared differences
       squared_diff = (totalfit - reference)^2
       
       ; Compute the mean of these squared differences
       mse = total(squared_diff) / n_elements(totalfit)
-      return
-   endif
+   endif 
 endelse
 
-  mse = 0
   return
 
   end
