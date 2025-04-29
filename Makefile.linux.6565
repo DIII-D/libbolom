@@ -175,7 +175,7 @@ SRCSF = splinebasis.f
 #		/usr/include/sys/syscall.h \
 #		/usr/include/sys/types.h
 
-all:		libbolom.so test
+all:		libbolom.so tests
 
 $(PROGRAM):     $(OBJS)  bolomfit.o $(OBJS)
 		@echo "Linking $(PROGRAM) ..."
@@ -232,7 +232,7 @@ libbolomx.so: $(OBJS) bolomx.o
 
 blas/libblas.a:
 		cd blas && make
-test:
+tests:
 		cd test && make
 libbolom.a: $(OBJS) 
 		ar r libbolom.a $?
