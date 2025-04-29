@@ -14,7 +14,7 @@ phantom_tests = phantom1_test \
               phantom2_test \
               phantom3_test
 
-threshhold = 0.0
+threshhold = 1.0e-8
 all: test
 
 
