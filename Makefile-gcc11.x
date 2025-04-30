@@ -215,7 +215,7 @@ bolomfitsl:     bolomfit.o
 		@echo "done"
 
 blas/libblas.a:
-		cd blas && make
+		cd blas && make -f Makefile-gcc11.x
 tests:
 		cd test && make
 
