@@ -188,7 +188,7 @@ bolomfitsl:     bolomfit.o
 		chmod u+x bolomfit
 		@echo "done"
 
-libbolom.so:  blas/libblas.a $(OBJS)
+libbolom.so:  $(OBJS) blas/libblas.a
 		@echo ' '
 		@echo ' -----------------------------------------------------'
 		@echo 'Building libbolom.linux.so  20090122 tbt'

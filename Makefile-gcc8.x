@@ -199,7 +199,7 @@ SRCSF = splinebasis.f
 #		/usr/include/sys/syscall.h \
 #		/usr/include/sys/types.h
 
-all:		libbolom.so tests
+all:		libbolom.so tests 
 
 $(PROGRAM):     $(OBJS)  bolomfit.o $(OBJS)
 		@echo "Linking $(PROGRAM) ..."
@@ -229,6 +229,7 @@ libbolom.a: $(OBJS)
 		ar r libbolom.a $?
 
 clean:;		@rm -f $(OBJS) core
+		@cd blas && make clean
 
 clobber:;	@rm -f $(OBJS) $(PROGRAM) core tags
 
