@@ -91,11 +91,7 @@ float rax,zax,rxpt1,zxpt1,rxpt2,zxpt2;
     struct sigaction vec,ovec;
     efitgeom(efit,rax,zax,rxpt1,zxpt1,rxpt2,zxpt2,psi_norm);
     if(!bolom_set_gmatrix(shot))return(0);
-<<<<<<< HEAD
-    ///write_imagedat("psi_norm.sdt",psi_norm);
-=======
     //write_imagedat("psi_norm.sdt",psi_norm);
->>>>>>> origin/omega
 
 
     done = 0;

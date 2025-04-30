@@ -124,11 +124,7 @@ LIBS64	      =  -L./blas -lblas
 #
 # 20110414 acml.so doesn't exist on venus
 #LIBS64	      =  $(PGI_DIR)/lib/libblas.a $(PGI_DIR)/libso/libpgc.so
-<<<<<<< HEAD
-#LIBS64	      =  -L $(LD_LIBRARY_PATH) libblas.a 
-=======
 LIBS64	      =  -L $(LD_LIBRARY_PATH) -L./blas -lblas
->>>>>>> origin/omega
 
 
 MAKEFILE      = Makefile
@@ -165,11 +161,7 @@ COREOBJS = idlwrappers.o \
        corespline.o \
        splinebasis.o\
        bolomproj.o \
-<<<<<<< HEAD
-       lsei.o \
-=======
        587.o \
->>>>>>> origin/omega
        tomscore.o
 
 OBJS = $(COREOBJS) $(LOWEROBJS) $(UPPEROBJS)
@@ -207,11 +199,7 @@ SRCSF = splinebasis.f
 #		/usr/include/sys/syscall.h \
 #		/usr/include/sys/types.h
 
-<<<<<<< HEAD
-all:		libbolom.so 
-=======
 all:		libbolom.so tests
->>>>>>> origin/omega
 
 $(PROGRAM):     $(OBJS)  bolomfit.o $(OBJS)
 		@echo "Linking $(PROGRAM) ..."
@@ -224,10 +212,6 @@ bolomfitsl:     bolomfit.o
 		chmod u+x bolomfit
 		@echo "done"
 
-<<<<<<< HEAD
-libbolom.so:  $(OBJS) blas/libblas.a
-	$(LD) -o libbolom.so -shared $(OBJS)  $(LDFLAGS) $(LIBS64);		\
-=======
 blas/libblas.a:
 		cd blas && make
 tests:
@@ -235,7 +219,6 @@ tests:
 libbolom.so:  $(OBJS) blas/libblas.a
 	$(LD) -o libbolom.so -shared $(OBJS)  $(LDFLAGS) $(LIBS64);		\
 	   mkdir -p linux64;                                                      \
->>>>>>> origin/omega
 	   cp libbolom.so libbolom6565.linux64.so;				\
 	   cp libbolom.so linux64/libbolom6565.linux64.so;			\
 
