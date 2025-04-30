@@ -228,7 +228,7 @@ libbolomx.so: $(OBJS) bolomx.o
 libbolom.a: $(OBJS) 
 		ar r libbolom.a $?
 
-clean:;		@rm -f $(OBJS) core
+clean:;		@rm -f $(OBJS) core *.so
 		@cd blas && make clean
 
 clobber:;	@rm -f $(OBJS) $(PROGRAM) core tags
