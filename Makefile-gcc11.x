@@ -126,7 +126,7 @@ LIBS64        =  -L./blas -lblas
 #
 # 20110414 acml.so doesn't exist on venus
 #LIBS64	      =  $(PGI_DIR)/lib/libblas.a $(PGI_DIR)/libso/libpgc.so
-LIBS64	      =  -L $(LD_LIBRARY_PATH) -L./blas libblas.a 
+LIBS64	      =  -L $(LD_LIBRARY_PATH) -L./blas -lblas 
 
 
 MAKEFILE      = Makefile
