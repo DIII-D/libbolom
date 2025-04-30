@@ -53,7 +53,7 @@ float rax,zax,rxpt1,zxpt1,rxpt2,zxpt2;
     int i,j,k;
     int n;
 
-    struct sigvec vec,ovec;
+    struct sigaction vec,ovec;
     funcevals = 1;
 
     fitchans = chans;
@@ -72,12 +72,13 @@ float rax,zax,rxpt1,zxpt1,rxpt2,zxpt2;
     if(done)return;
     done = 1;
 
-    vec.sv_handler = dumpum_spupper;
-    vec.sv_mask = 0xfffff;
-    vec.sv_onstack = 0;
-    vec.sv_flags = 0;
-    sigvector(SIGINT,&vec,&ovec);
-    prev_handler = ovec.sv_handler;
+#if defined(TRAPS)
+    vec.sa_handler = dumpum_spupper;
+    sigfillset(&vec.sa_mask);
+    vec.sa_flags = 0;
+    sigaction(SIGINT,&vec,&ovec);
+    prev_handler = ovec.sa_handler;
+#endif
 
     /*write_projdat("upperorig.dat",inproj);*/
 
@@ -109,7 +110,9 @@ float rax,zax,rxpt1,zxpt1,rxpt2,zxpt2;
     if(ftol > 0.0)
         powell(p,xi,n,ftol,iter,fret,spuppereval);
 
-    sigvector(SIGINT,&ovec,0);
+#if defined(TRAPS)
+    sigaction(SIGINT,&ovec,0);
+#endif
 
     f = fopen("uppercoefs.dat","w");
     for(i = 1;i <= n; ++i){
@@ -230,7 +233,7 @@ dumpum_spupper()
     FILE *f;
     int i;
     int n;
-    struct sigvec vec,ovec;
+    struct sigaction vec,ovec;
     image gimage;
     n = nrfitpts * nzfitpts;
     printf("dumping unknowns in uppercoefs.dat\n");
@@ -241,15 +244,13 @@ dumpum_spupper()
     fflush(f);
     fclose(f);
     if(prev_handler){
-        vec.sv_handler = prev_handler;
-        vec.sv_mask = 0xffff;
-        vec.sv_onstack = 0;
-        vec.sv_flags = 0;
-        sigvector(SIGINT,&vec,0);
+        vec.sa_handler = prev_handler;
+	sigfillset(&vec.sa_mask);
+        vec.sa_flags = 0;
+        sigaction(SIGINT,&vec,0);
         prev_handler();
         longjmp(sjbuf,0) ;
     }  else
         exit(0);
 }
-#include "spimage_toms_pz.c"
 

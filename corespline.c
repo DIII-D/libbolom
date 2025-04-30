@@ -30,6 +30,7 @@ int debug  = 0;
 
 #include <math.h>
 #include <stdlib.h>
+#include <unistd.h>
 #include <signal.h>
 #include <stdio.h>
 #include "boundext.h"
@@ -37,10 +38,10 @@ int debug  = 0;
 static jmp_buf sjbuf ;
 static int ilxp,iuxp;
 static float xinc,yinc;
-float *gmatrix;
-int *gpos;
-int gmatrix_len;
-int gpos_len;
+extern float *gmatrix;
+extern int *gpos;
+extern int gmatrix_len;
+extern int gpos_len;
 #define PROJ (gpos[k])
 #define CELL (gpos[j])
 
@@ -51,6 +52,7 @@ static float *fitpts;
 static int nfitpts;
 static image inefit;
 static int done;
+
 
 
 bolomfit_core(shot,chans,nchans,inproj,sigma,kpsi,nkpsi,tens,efit,rax,zax,
@@ -93,7 +95,8 @@ float rax,zax,rxpt1,zxpt1,rxpt2,zxpt2;
     PREC *tz,*uz;
     PREC *sol;
 
-    struct sigvec vec,ovec;
+#if defined(TRAPS)
+    struct sigaction vec,ovec;
 		if(!bolom_set_gmatrix(shot))return(0);
 
 
@@ -102,16 +105,16 @@ float rax,zax,rxpt1,zxpt1,rxpt2,zxpt2;
     if(done)return;
     done = 1;
 
-    vec.sv_handler = splcore;
-    vec.sv_mask = 0xffff;
-    vec.sv_onstack = 0;
-    vec.sv_flags = 0;
-    sigvector(SIGINT,&vec,&ovec);
-    T=tens;
-    prev_handler = ovec.sv_handler;
+    vec.sa_handler = splcore;
+    sigfillset(&vec.sa_mask);
+    vec.sa_flags = 0;
+    sigaction(SIGINT,&vec,&ovec);
+    prev_handler = ovec.sa_handler;
+#endif
 
     /*write_projdat("coreorig.dat",inproj);*/
 
+    T=tens;
     for(i=0;i<71;++i)tproj[i] = 0.0;
     for(i=0;i<nchans;++i){
         tproj[chans[i]] = inproj[chans[i]];
@@ -131,7 +134,9 @@ float rax,zax,rxpt1,zxpt1,rxpt2,zxpt2;
     iuxp *= XLEN;
 
 
-    sigvector(SIGINT,&ovec,0);
+#if defined(TRAPS)
+    sigaction(SIGINT,&ovec,0);
+#endif
 
 
 
@@ -139,10 +144,10 @@ float rax,zax,rxpt1,zxpt1,rxpt2,zxpt2;
 
 
 
-    /*printf("number of knots= %d\n",nkpsi);*/
+    //printf("number of knots= %d\n",nkpsi);
 
     na = XLEN * YLEN;
-    /*printf("na:%d nchans:%d\n",na,nchans);*/
+    //printf("na:%d nchans:%d\n",na,nchans);
     numunk = 2 * nkpsi;
     cmat = calloc(sizeof(PREC),numunk * na);
 
@@ -182,8 +187,8 @@ float rax,zax,rxpt1,zxpt1,rxpt2,zxpt2;
     BACNST(&numunk,&T,kpsi,&nkpsi,u,&eqn,&nma,uz);
 
 
-    /*printf("least squares matrix is %d x %d\n",numunk,nchans);*/
-    /*printf("constraint matrix is %d x %d\n",numunk,nma);*/
+    //printf("least squares matrix is %d x %d\n",numunk,nchans);
+    //printf("constraint matrix is %d x %d\n",numunk,nma);
 
     sol = calloc(sizeof(PREC) * 2,numunk);
     tz = calloc(sizeof(PREC) * 2,nchans);
@@ -208,7 +213,7 @@ float rax,zax,rxpt1,zxpt1,rxpt2,zxpt2;
         /*printf("info = %d\n",info);*/
         return;
     }
-    /*printf("lwork = %d work(1) = %g\n",lwork,work[0]);*/
+    //printf("lwork = %d work(1) = %g\n",lwork,work[0]);
 #else
 
     mg = numunk / 2;
@@ -323,7 +328,8 @@ float rax,zax,rxpt1,zxpt1,rxpt2,zxpt2;
     }
     if(nchans > numunk)
         *fret = *fret / (float)(nchans - numunk);
-    /*fprintf(stderr,"core chi = %g\n",*fret);*/
+    //fprintf(stderr,"core chi = %g\n",*fret);
+    //printf("core chi = %g\n",*fret);
     free(cmat);
     free(imat);
     free(timat);
@@ -344,7 +350,7 @@ splcore()
     FILE *f;
     int i;
     image gimage;
-    struct sigvec vec,ovec;
+    struct sigaction vec,ovec;
     printf("dumping unknowns in corecoefs.dat\n");
     f = fopen("corecoefs.dat","w");
     for(i = 1;i <= nfitpts; ++i){
@@ -353,11 +359,10 @@ splcore()
     fflush(f);
     close(f);
     if(prev_handler){
-        vec.sv_handler = prev_handler;
-        vec.sv_mask = 0xffff;
-        vec.sv_onstack = 0;
-        vec.sv_flags = 0;
-        sigvector(SIGINT,&vec,0);
+        vec.sa_handler = prev_handler;
+        sigfillset(&vec.sa_mask);
+        vec.sa_flags = 0;
+        sigaction(SIGINT,&vec,0);
         prev_handler();
         longjmp(sjbuf,0) ;
     }  else

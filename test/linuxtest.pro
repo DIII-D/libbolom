@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 pro linuxtest,savefile,mse,production=production,referencefile=referencefile,saveref=saveref
+=======
+pro linuxtest,savefile,mse,production=production,referencefile=referencefile,saveref=saveref,plots=plots
+>>>>>>> origin/omega
 restore,savefile
 common xptcom,nextwindow
 nextwindow = 0
@@ -9,7 +13,11 @@ endif else begin
 endelse
 lib = DIRBOLO+'./linux64/libbolom6565.linux64.so'
 
+<<<<<<< HEAD
 testplots = 0 ; turn on to debug test
+=======
+if isa(plots) ne 0 then testplots=1 else testplots=0
+>>>>>>> origin/omega
 print,'Using library :',lib
 maxchans = nchans
 efit = fltarr(65,65)

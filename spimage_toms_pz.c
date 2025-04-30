@@ -1,8 +1,11 @@
 
+#include "bolom.h"
+
 static int nxpoint,nypoint;
 static float *x,*y,**z,*tz,*dy,**xp,*yp,*temp;
 static float sx,sy,slp1,slpn;
 static float xe,xb,ye,yb,xb2,xe2;
+extern int nrfitpts,nzfitpts;
 
 static spgridimage_init(xtension,ytension)
 float xtension,ytension;

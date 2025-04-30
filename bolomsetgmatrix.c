@@ -7,10 +7,11 @@
 #include "gmatrix6565.h"
 #include "gpos6565.h"
 #endif
-extern float *gmatrix;
-extern int *gpos;
-extern int gmatrix_len;
-extern int gpos_len;
+float *gmatrix;
+int *gpos;
+int gmatrix_len;
+int gpos_len;
+
 bolom_set_gmatrix(shot)
 int shot;
 {

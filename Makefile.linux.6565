@@ -232,8 +232,11 @@ libbolomx.so: $(OBJS) bolomx.o
 
 blas/libblas.a:
 		cd blas && make
+<<<<<<< HEAD
 tests:
 		cd test && make
+=======
+>>>>>>> origin/omega
 libbolom.a: $(OBJS) 
 		ar r libbolom.a $?
 
