@@ -238,6 +238,7 @@ libbolom.a: $(OBJS)
 		ar r libbolom.a $?
 
 clean:;		@rm -f $(OBJS) core
+		@cd blas && make clean
 
 clobber:;	@rm -f $(OBJS) $(PROGRAM) core tags
 
