@@ -38,8 +38,9 @@ static float xinc,yinc;
 float psi_norm[XLEN*YLEN],*inefit;
 
 void tot_spgridimage();
-
-
+void spcoreimage_done();
+void splowerimage_done();
+void spupperimage_done();
 
 
 float sptotaleval(x)
