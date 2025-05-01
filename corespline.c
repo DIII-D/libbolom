@@ -58,10 +58,10 @@ static int done;
 bolomfit_core(shot,chans,nchans,inproj,sigma,kpsi,nkpsi,tens,efit,rax,zax,
 rxpt1,zxpt1,rxpt2,zxpt2,fitproj,fitimage,errorimage,fret)
 unsigned int shot;
-float *inproj,*sigma,*kpsi,*fitproj,*fret,tens;
+float *inproj,*sigma,*kpsi,*fitproj,*fret,*tens;
 image efit,fitimage,errorimage;
 int *chans,nchans,nkpsi;
-float rax,zax,rxpt1,zxpt1,rxpt2,zxpt2;
+float *rax,*zax,*rxpt1,*zxpt1,*rxpt2,*zxpt2;
 
 {
 
@@ -114,7 +114,7 @@ float rax,zax,rxpt1,zxpt1,rxpt2,zxpt2;
 
     /*write_projdat("coreorig.dat",inproj);*/
 
-    T=tens;
+    T=*tens;
     for(i=0;i<71;++i)tproj[i] = 0.0;
     for(i=0;i<nchans;++i){
         tproj[chans[i]] = inproj[chans[i]];
@@ -122,14 +122,14 @@ float rax,zax,rxpt1,zxpt1,rxpt2,zxpt2;
     /*for(i=0;i<71;++i)inproj[i] = tproj[i];*/
     xinc = (XMAX - XMIN) / (float)(XLEN-1);
     yinc = (YMAX - YMIN) / (float)(YLEN-1);
-    if(rxpt1 < XMIN || rxpt1 > XMAX ||
-        zxpt1 < YMIN || zxpt1 > YMAX){
+    if(*rxpt1 < XMIN || *rxpt1 > XMAX ||
+        *zxpt1 < YMIN || *zxpt1 > YMAX){
         ilxp = 0;
-    } else ilxp = (zxpt1 - YMIN) / yinc;
-    if(rxpt2 < XMIN || rxpt2 > XMAX ||
-        zxpt2 < YMIN || zxpt2 > YMAX){
+    } else ilxp = (*zxpt1 - YMIN) / yinc;
+    if(*rxpt2 < XMIN || *rxpt2 > XMAX ||
+        *zxpt2 < YMIN || *zxpt2 > YMAX){
         iuxp = YLEN-1;
-    } else iuxp = (zxpt2 - YMIN) / yinc;
+    } else iuxp = (*zxpt2 - YMIN) / yinc;
     ilxp *= XLEN;
     iuxp *= XLEN;
 

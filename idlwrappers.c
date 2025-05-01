@@ -108,8 +108,8 @@ void *argv[];
     fitimage = argv[16];
 		errorimage = argv[17];
     fret = argv[18];
-    bolomfit_core(*shot,chans,*nchans,inproj,sigma,kpsi,*nkpsi,*tension,efit,
-        *rax,*zax,*rxpt1,*zxpt1,*rxpt2,*zxpt2,fitproj,fitimage,errorimage,fret);
+    bolomfit_core(*shot,chans,*nchans,inproj,sigma,kpsi,*nkpsi,tension,efit,
+        rax,zax,rxpt1,zxpt1,rxpt2,zxpt2,fitproj,fitimage,errorimage,fret);
 
     return(0);
 }
