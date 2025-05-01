@@ -185,9 +185,9 @@ void *argv[];
     fitproj = argv[22];
     fitimage = argv[23];
     fret = argv[24];
-    bolomfit_lower_cells(*shot,chans,*nchans,inproj,sigma,*zinner,*zouter,
-				*minprivate,*mincore,*maxinner,*maxouter,*drwtd,*dzwtd,*drwtb,*dzwtb,
-        efit,*rax,*zax,*rxpt1,*zxpt1,*rxpt2,*zxpt2,fitproj,fitimage,fret);
+    bolomfit_lower_cells(*shot,chans,*nchans,inproj,sigma,zinner,zouter,
+				minprivate,mincore,maxinner,maxouter,drwtd,dzwtd,drwtb,dzwtb,
+        efit,rax,zax,rxpt1,zxpt1,rxpt2,zxpt2,fitproj,fitimage,fret);
 
     return(0);
 

@@ -52,11 +52,11 @@ bolomfit_lower_cells(shot,chans,nchans,inproj,sigma,zinner,zouter,minprivate,min
 rxpt1,zxpt1,rxpt2,zxpt2,fitproj,fitimage,fret)
 unsigned int shot;
 float *inproj,*sigma,*fitproj,*fret;
-float zinner,zouter,minprivate,mincore,maxinner,maxouter;
-float drwtd,dzwtd,drwtb,dzwtb;
+float *zinner,*zouter,*minprivate,*mincore,*maxinner,*maxouter;
+float *drwtd,*dzwtd,*drwtb,*dzwtb;
 image efit,fitimage;
 int *chans,nchans;
-float rax,zax,rxpt1,zxpt1,rxpt2,zxpt2;
+float *rax,*zax,*rxpt1,*zxpt1,*rxpt2,*zxpt2;
 
 {
 
@@ -90,7 +90,7 @@ float rax,zax,rxpt1,zxpt1,rxpt2,zxpt2;
     PREC *sol;
 
     struct sigaction vec,ovec;
-    efitgeom(efit,rax,zax,rxpt1,zxpt1,rxpt2,zxpt2,psi_norm);
+    efitgeom(efit,*rax,*zax,*rxpt1,*zxpt1,*rxpt2,*zxpt2,psi_norm);
     if(!bolom_set_gmatrix(shot))return(0);
 
 
@@ -113,23 +113,23 @@ float rax,zax,rxpt1,zxpt1,rxpt2,zxpt2;
 
     xinc = (XMAX - XMIN) / (float)(XLEN-1);
     yinc = (YMAX - YMIN) / (float)(YLEN-1);
-    drwtd *= yinc / xinc;
-    drwtb *= yinc / xinc;
+    *drwtd *= yinc / xinc;
+    *drwtb *= yinc / xinc;
 
-    if(rxpt1 < XMIN || rxpt1 > XMAX ||
-        zxpt1 < YMIN || zxpt1 > YMAX){
+    if(*rxpt1 < XMIN || *rxpt1 > XMAX ||
+        *zxpt1 < YMIN || *zxpt1 > YMAX){
         ilxp = 0;
-    } else ilxp = (zxpt1 - YMIN) / yinc;
+    } else ilxp = (*zxpt1 - YMIN) / yinc;
     ilxp *= XLEN;
 
-    if(zinner < YMIN || zinner > YMAX){
+    if(*zinner < YMIN || *zinner > YMAX){
         iuix = 0;
-    } else iuix = (zinner - YMIN) / yinc;
+    } else iuix = (*zinner - YMIN) / yinc;
     iuix *= XLEN;
 
-    if(zouter < YMIN || zouter > YMAX){
+    if(*zouter < YMIN || *zouter > YMAX){
         ouix = 0;
-    } else ouix = (zouter - YMIN) / yinc;
+    } else ouix = (*zouter - YMIN) / yinc;
     ouix *= XLEN;
 
     memset(grad,0L,sizeof(grad));
@@ -155,13 +155,13 @@ float rax,zax,rxpt1,zxpt1,rxpt2,zxpt2;
 
     for(i = 0;i < ilxp;++i){
         if(bound_flag[i] || fitimage[i] == 0.0)continue;
-        if(psi_norm[i] <= 0 && efit[i] >= minprivate &&
-            efit[i] <= maxinner){
+        if(psi_norm[i] <= 0 && efit[i] >= *minprivate &&
+            efit[i] <= *maxinner){
             grad[i] = numlow + 1.0;
             ++numlow;
         }
-        if(psi_norm[i] > 0 && efit[i] >= minprivate &&
-            efit[i] <= maxouter){
+        if(psi_norm[i] > 0 && efit[i] >= *minprivate &&
+            efit[i] <= *maxouter){
             grad[i] = numlow + 1.0;
             ++numlow;
         }
@@ -169,13 +169,13 @@ float rax,zax,rxpt1,zxpt1,rxpt2,zxpt2;
     ibndy=(iuix>ouix)?iuix:ouix;
       for(i = ilxp;i < ibndy;++i){
         if(bound_flag[i] || fitimage[i] == 0.0)continue;
-        if(psi_norm[i] <= 0 && efit[i] >= mincore &&
-            efit[i] <= maxinner && i < iuix){
+        if(psi_norm[i] <= 0 && efit[i] >= *mincore &&
+            efit[i] <= *maxinner && i < iuix){
             grad[i] = numlow + 1.0;
             ++numlow;
         }
-        if(psi_norm[i] > 0 && efit[i] >= mincore &&
-            efit[i] <= maxouter && i < ouix){
+        if(psi_norm[i] > 0 && efit[i] >= *mincore &&
+            efit[i] <= *maxouter && i < ouix){
             grad[i] = numlow + 1.0;
             ++numlow;
         }
@@ -209,24 +209,24 @@ float rax,zax,rxpt1,zxpt1,rxpt2,zxpt2;
     /*radial smoothing*/
     for(j=0,k=0;k < ilxp;++k){
         if(grad[k] > 0.0){
-            imat[(j+nchans)*lda+j] += -2 * drwtd;
+            imat[(j+nchans)*lda+j] += -2 * *drwtd;
             if((k%XLEN)>0 && grad[k-1] > 0.0){
-                imat[(j+nchans)*lda+(j-1)] += 1 * drwtd;
+                imat[(j+nchans)*lda+(j-1)] += 1 * *drwtd;
             }
             if((k%XLEN)<(XLEN-1) && grad[k+1] > 0.0){
-                imat[(j+nchans)*lda+(j+1)] += 1 * drwtd;
+                imat[(j+nchans)*lda+(j+1)] += 1 * *drwtd;
             }
             ++j;
         }
     }
     for(k=ilxp;k < ibndy;++k){
         if(grad[k] > 0.0){
-            imat[(j+nchans)*lda+j] += -2 * drwtb;
+            imat[(j+nchans)*lda+j] += -2 * *drwtb;
             if((k%XLEN)>0 && grad[k-1] > 0.0){
-                imat[(j+nchans)*lda+(j-1)] += 1 * drwtb;
+                imat[(j+nchans)*lda+(j-1)] += 1 * *drwtb;
             }
             if((k%XLEN)<(XLEN-1) && grad[k+1] > 0.0){
-                imat[(j+nchans)*lda+(j+1)] += 1 * drwtb;
+                imat[(j+nchans)*lda+(j+1)] += 1 * *drwtb;
             }
             ++j;
         }
@@ -234,24 +234,24 @@ float rax,zax,rxpt1,zxpt1,rxpt2,zxpt2;
     /*vertical smoothing*/
     for(j=0,k=0;k < ilxp;++k){
         if(grad[k] > 0.0){
-            imat[(j+nchans+numlow)*lda+j] += -2 * dzwtd;
+            imat[(j+nchans+numlow)*lda+j] += -2 * *dzwtd;
             if(k>XLEN && grad[k-XLEN] > 0.0) {
-                imat[(j+nchans+numlow)*lda+grad[k-XLEN]-1] += 1 * dzwtd;
+                imat[(j+nchans+numlow)*lda+grad[k-XLEN]-1] += 1 * *dzwtd;
             }
             if(k<(na-XLEN) && grad[k+XLEN] > 0.0) {
-                imat[(j+nchans+numlow)*lda+grad[k+XLEN]-1] += 1 * dzwtd;
+                imat[(j+nchans+numlow)*lda+grad[k+XLEN]-1] += 1 * *dzwtd;
             }
             ++j;
         }
     }
     for(k=ilxp;k < ibndy;++k){
         if(grad[k] > 0.0){
-            imat[(j+nchans+numlow)*lda+j] += -2 * dzwtb;
+            imat[(j+nchans+numlow)*lda+j] += -2 * *dzwtb;
             if(k>XLEN && grad[k-XLEN] > 0.0) {
-                imat[(j+nchans+numlow)*lda+grad[k-XLEN]-1] += 1 * dzwtb;
+                imat[(j+nchans+numlow)*lda+grad[k-XLEN]-1] += 1 * *dzwtb;
             }
             if(k<(na-XLEN) && grad[k+XLEN] > 0.0) {
-                imat[(j+nchans+numlow)*lda+grad[k+XLEN]-1] += 1 * dzwtb;
+                imat[(j+nchans+numlow)*lda+grad[k+XLEN]-1] += 1 * *dzwtb;
             }
             ++j;
         }
