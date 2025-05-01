@@ -18,5 +18,5 @@ typedef float image[YLEN * XLEN];
 #define CORE
 #define LOWER
 #define UPPER
-void efitgeom(float *,float,float,float,float,float,float,float *)
+void efitgeom(float *,float,float,float,float,float,float,float *);
 
