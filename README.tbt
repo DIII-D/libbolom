@@ -1,22 +1,28 @@
 
-/* Done for HP-UX
-/*    tbt 20031a03 Added FLAGS +ppu to put an "_" after compiled external referneces.  */
-/*    tbt 20031a03 Added LIBS = /usr/lib/libveclib.a to resolve sdot                   */ 
-/*    
 
 
-/* Done to Makefile.linux.lf95                                                                                */
-/*    tbt 20031031 Added "_" to end of basisv  for gamini.gat.com compatibility.  */
-/*    tbt 20031031 Added "_" to end of basisel for gamini.gat.com compatibility.  */
-/*    tbt 20031031 Added "_" to end of lsei    for gamini.gat.com compatibility.  */
-/*    tbt 20031031 Added "_" to end of bacnst  for gamini.gat.com compatibility.  */
+Iris:
 
-Also needed to add 587.f to SRCSF in Makefile.linux.
+    module load pgi
+    make -f Makefile.linux.6565
+
+    module swap gcc-4.7.2 gcc-9.2.0
+    make -f Makefile-gcc8.x clean all
+
+    module swap gcc-9.2.0 gcc-11.2.0
+    make -f Makefile-gcc11.x clean all
 
 
-bolomlowercells.c
+Omega:
 
-bolomlowercells5pt.c
+    make -f Makefile.linux.6565
 
-bolomuppercells.c
+    make -f Makefile-gcc8.x clean all
+
+    module swap gcc gcc/11.x
+    make -f Makefile-gcc11.x
+
+    module swap gcc gcc/13.x
+    make -f Makefile-gcc11.x
+    
 
