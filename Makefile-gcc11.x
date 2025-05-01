@@ -134,7 +134,6 @@ MAKEFILE      = Makefile
 OBJS	      = corespline.o \
 		bolomlower.o \
 		bolomlowercells.o \
-		bolomlowercells5pt.o \
 		bolomuppercells.o \
 		bolomtotal.o \
 		bolomupper.o \
@@ -260,7 +259,6 @@ bolomfit.o: $(HDRS)
 bolomlower.o: bolomlower.c $(HDRS)
 bolomupper.o: bolomupper.c $(HDRS)
 bolomlowercells.o: bolomlowercells.c $(HDRS)
-bolomlowercells5pt.o: bolomlowercells5pt.c $(HDRS)
 bolomuppercells.o: bolomuppercells.c $(HDRS)
 bolomtotal.o: bolomtotal.c $(HDRS)
 bolomproj.o: bolomproj.c $(HDRS)
