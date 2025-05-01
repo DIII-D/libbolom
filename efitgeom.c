@@ -2,11 +2,7 @@
 #include <math.h>
 
 
-void efitgeom(efit,rax,zax,rxpt1,zxpt1,rxpt2,zxpt2,psi_norm)
-float *efit,*psi_norm;
-float rxpt1,zxpt1;
-float rxpt2,zxpt2;
-float rax,zax;
+void efitgeom(float *efit,float rax,float zax,float rxpt1,float zxpt1,float rxpt2,float zxpt2,float *psi_norm)
 {
     int i,j;
     int ai,aj;
