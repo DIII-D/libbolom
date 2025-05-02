@@ -127,10 +127,10 @@ UPPEROBJS = bolomuppercells.o
 
 COREOBJS = idlwrappers.o \
        bolomsetgmatrix.o \
-       corespline.o \ 
-       splinebasis.o\
+       corespline.o \
+       splinebasis.o \
        bolomproj.o \
-       587.o \  
+       587.o \
        tomscore.o
 
 OBJS = $(COREOBJS) $(LOWEROBJS) $(UPPEROBJS)
