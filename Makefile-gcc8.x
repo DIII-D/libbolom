@@ -132,6 +132,7 @@ LOWEROBJS = bolomlowercells.o \
 UPPEROBJS = bolomuppercells.o 
 
 COREOBJS = idlwrappers.o \
+       pythonwrappers.o \
        bolomsetgmatrix.o \
        corespline.o \
        splinebasis.o\
