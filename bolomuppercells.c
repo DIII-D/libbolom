@@ -10,16 +10,13 @@
 #define PREC float
 #include <stdio.h>
 /*#include <VIEW/user.h>*/
-#include <nrutil.h>
 #include <math.h>
 #define EMIN 0.0
 #define EMAX 20.0
 static int debug  = 0;
 #include "bolom.h"
 
-#include <math.h>
 #include <stdlib.h>
-#include <nrutil.h>
 #include <signal.h>
 #include <stdio.h>
 #include "boundext.h"

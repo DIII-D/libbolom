@@ -70,8 +70,6 @@ CC=gcc   -fPIC
 LD=gfortran   -fPIC
 DEST	      = .
 
-# 20150508 tbt It looks as if EXTHDRS is not used, so I commented it out.
-#EXTHDRS	      = /usr/local/include/nrutil.h
 
 HDRS	      = bolom.h \
 		boundext.h \

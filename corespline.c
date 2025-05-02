@@ -19,8 +19,6 @@
 
 #define PREC float
 #include <stdio.h>
-/*#include <VIEW/user.h>*/
-/*#include <nrutil.h>*/
 #include <math.h>
 #define EMIN 0.0
 #define EMAX 20.0
@@ -28,7 +26,6 @@ int debug  = 0;
 #include "bolom.h"
 #define POSITIVE_EMISSION
 
-#include <math.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <signal.h>
