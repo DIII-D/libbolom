@@ -80,8 +80,7 @@ HDRS	      = bolom.h \
 		gpos3365.h \
 		bound6565.h \
 		gmatrix6565.h \
-		gpos6565.h \
-		volmat.h
+		gpos6565.h 
 
 INSTALL	      = /etc/install
 
@@ -153,13 +152,6 @@ PROGRAM       = bolomfit
 
 SHELL	      = /bin/sh
 
-SRCS	      = corespline.c \
-		bolomlower.c \
-		bolomupper.c \
-		bolomtotal.c \
-		bolomproj.c \
-		powell.c \
-		idlwrappers.c
 
 SRCSF = splinebasis.f
 
@@ -213,23 +205,13 @@ libbolom.a: $(OBJS)
 clean:;		@rm -f $(OBJS) core *.so 
 		@cd blas && make clean
 
-clobber:;	@rm -f $(OBJS) $(PROGRAM) core tags
-
 depend:;	@mkmf -f $(MAKEFILE) ROOT=$(ROOT)
-
-echo:;		@echo $(HDRS) $(SRCS)
-
-index:;		@ctags -wx $(HDRS) $(SRCS)
 
 install:	$(PROGRAM)
 		@echo Installing $(PROGRAM) in $(DEST)
 		@-strip $(PROGRAM)
 		@if [ $(DEST) != . ]; then \
 		(rm -f $(DEST)/$(PROGRAM); $(INSTALL) -f $(DEST) $(PROGRAM)); fi
-
-print:;		@$(PRINT) $(HDRS) $(SRCS)
-
-tags:           $(HDRS) $(SRCS); @ctags $(HDRS) $(SRCS)
 
 update:		$(DEST)/$(PROGRAM)
 
