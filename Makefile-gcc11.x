@@ -131,26 +131,6 @@ LIBS64	      =  -L $(LD_LIBRARY_PATH) -L./blas -lblas
 
 MAKEFILE      = Makefile
 
-OBJS	      = corespline.o \
-		bolomlower.o \
-		bolomlowercells.o \
-		bolomuppercells.o \
-		bolomtotal.o \
-		bolomupper.o \
-		bolomproj.o \
-		powell.o \
-		idlwrappers.o\
-		splinebasis.o\
-		efitgeom.o\
-		bolomsetgmatrix.o\
-		nrutil.o \
-		spline.o \
-		tomscore.o \
-		linmin.o \
-		brent.o \
-		mnbrak.o \
-		f1dim.o \
-		spimage_toms_pz.o
 
 LOWEROBJS = bolomlowercells.o \
 	    efitgeom.o
@@ -254,7 +234,7 @@ tags:           $(HDRS) $(SRCS); @ctags $(HDRS) $(SRCS)
 update:		$(DEST)/$(PROGRAM)
 
 ###
-bolomcore.o: bolomcore.c spimage_dierckx.c spimage_pppack.c $(HDRS)
+bolomcore.o: bolomcore.c  $(HDRS)
 bolomfit.o: $(HDRS)
 bolomlower.o: bolomlower.c $(HDRS)
 bolomupper.o: bolomupper.c $(HDRS)
